@@ -17,7 +17,6 @@ export const paymentRequestWithApplePayItemsPropTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
-    type: PropTypes.oneOf('final', 'pending'),
   })),
 }
 
@@ -102,7 +101,7 @@ export const paymentRequestWithAndroidPayOptionsPropTypes = {
 }
 
 export const createSourceWithParamsPropType = {
-  type: PropTypes.oneOf(['bancontact', 'bitcoin', 'giropay', 'ideal', 'sepaDebit', 'sofort', 'threeDSecure', 'alipay']).isRequired,
+  type: PropTypes.oneOf(['bancontact', 'bitcoin', 'giropay', 'ideal', 'sepaDebit', 'sofort', 'threeDSecure', 'alipay', 'card']).isRequired,
   amount: PropTypes.number,
   name: PropTypes.string,
   returnURL: PropTypes.string,
@@ -116,4 +115,11 @@ export const createSourceWithParamsPropType = {
   postalCode: PropTypes.string,
   country: PropTypes.string,
   card: PropTypes.string,
+  cardDetail: {
+    number: PropTypes.string,
+    expMonth: PropTypes.number,
+    expYear: PropTypes.number,
+    cvc: PropTypes.string,
+    name: PropTypes.string,
+  },
 }

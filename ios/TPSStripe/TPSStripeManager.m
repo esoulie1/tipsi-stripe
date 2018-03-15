@@ -191,7 +191,7 @@ RCT_EXPORT_METHOD(createTokenWithCard:(NSDictionary *)params
     STPAPIClient *stripeAPIClient = [self newAPIClient];
 
     [stripeAPIClient createTokenWithCard:cardParams completion:^(STPToken *token, NSError *error) {
-        requestIsCompleted = YES;
+        self->requestIsCompleted = YES;
 
         if (error) {
             reject(nil, nil, error);
@@ -271,10 +271,19 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
          sourceParams = [STPSourceParams sofortParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] returnURL:params[@"returnURL"] country:params[@"country"] statementDescriptor:params[@"statementDescriptor"]];
     }
     if ([sourceType isEqualToString:@"threeDSecure"]) {
-         sourceParams = [STPSourceParams threeDSecureParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] currency:params[@"currency"] returnURL:params[@"returnURL"] card:params[@"card"]];
+        sourceParams = [STPSourceParams threeDSecureParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] currency:params[@"currency"] returnURL:params[@"returnURL"] card:params[@"card"]];
     }
     if ([sourceType isEqualToString:@"alipay"]) {
          sourceParams = [STPSourceParams alipayParamsWithAmount:[[params objectForKey:@"amount"] unsignedIntegerValue] currency:params[@"currency"] returnURL:params[@"returnURL"]];
+    }
+    if ([sourceType isEqualToString:@"card"]) {
+        STPCardParams *card = [STPCardParams new];
+        card.name = params[@"cardDetails"][@"name"];
+        card.number = params[@"cardDetails"][@"number"];
+        card.expMonth = params[@"cardDetails"][@"expMonth"];
+        card.expYear = params[@"cardDetails"][@"expYear"];
+        card.cvc = params[@"cardDetails"][@"cvc"];
+        sourceParams = [STPSourceParams cardParamsWithCard:card];
     }
 
     STPAPIClient* stripeAPIClient = [self newAPIClient];
@@ -286,7 +295,7 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
             reject(nil, nil, error);
         } else {
             if (source.redirect) {
-                STPRedirectContext *redirectContext = [[STPRedirectContext alloc] initWithSource:source completion:^(NSString *sourceID, NSString *clientSecret, NSError *error) {
+                self.redirectContext = [[STPRedirectContext alloc] initWithSource:source completion:^(NSString *sourceID, NSString *clientSecret, NSError *error) {
                     if (error) {
                         reject(nil, nil, error);
                     } else {
@@ -317,10 +326,11 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
                                         break;
                                 }
                             }
+                            self.redirectContext = nil;
                         }];
                     }
                 }];
-                [redirectContext startSafariAppRedirectFlow];
+                [self.redirectContext startSafariAppRedirectFlow];
             } else {
                 resolve([self convertSourceObject:source]);
             }
@@ -406,7 +416,6 @@ RCT_EXPORT_METHOD(paymentRequestWithApplePay:(NSArray *)items
         PKPaymentSummaryItem *summaryItem = [[PKPaymentSummaryItem alloc] init];
         summaryItem.label = item[@"label"];
         summaryItem.amount = [NSDecimalNumber decimalNumberWithString:item[@"amount"]];
-        summaryItem.type = [@"pending" isEqualToString:item[@"type"]] ? PKPaymentSummaryItemTypePending : PKPaymentSummaryItemTypeFinal;
         [summaryItems addObject:summaryItem];
     }
 
@@ -619,6 +628,7 @@ RCT_EXPORT_METHOD(openApplePaySetup) {
     NSMutableDictionary *result = [@{} mutableCopy];
 
     // Source
+    [result setValue:source.stripeID forKey:@"stripeID"];
     [result setValue:source.clientSecret forKey:@"clientSecret"];
     [result setValue:@([source.created timeIntervalSince1970]) forKey:@"created"];
     [result setValue:source.currency forKey:@"currency"];

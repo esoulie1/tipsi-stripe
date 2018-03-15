@@ -1,6 +1,6 @@
 {
   "name": "tipsi-stripe",
-  "version": "4.6.4",
+  "version": "4.6.5",
   "description": "React Native Stripe binding for iOS/Andriod platforms",
   "main": "src/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tipsi/tipsi-stripe.git"
+    "url": "git+https://github.com/esoulie1/tipsi-stripe.git"
   },
   "keywords": [
     "react",
@@ -20,9 +20,9 @@
   "author": "Tipsi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tipsi/tipsi-stripe/issues"
+    "url": "https://github.com/esoulie1/tipsi-stripe/issues"
   },
-  "homepage": "https://github.com/tipsi/tipsi-stripe#readme",
+  "homepage": "https://github.com/esoulie1/tipsi-stripe#readme",
   "rnpm": {
     "commands": {
       "prelink": "node_modules/tipsi-stripe/scripts/pre-link.sh",
