@@ -115,11 +115,8 @@ export const createSourceWithParamsPropType = {
   postalCode: PropTypes.string,
   country: PropTypes.string,
   card: PropTypes.string,
-  cardDetail: PropTypes.shape({
-    number: PropTypes.string,
-    expMonth: PropTypes.number,
-    expYear: PropTypes.number,
-    cvc: PropTypes.string,
-    name: PropTypes.string,
-  }),
+  number: PropTypes.string,
+  expMonth: PropTypes.number,
+  expYear: PropTypes.number,
+  cvc: PropTypes.string,
 }
