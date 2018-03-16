@@ -348,7 +348,10 @@ public class StripeModule extends ReactContextBaseJavaModule {
             options.getString("returnURL"),
             options.getString("card"));
         break;
-
+      case "card":
+        Card card = createCard(options);
+        sourceParams = SourceParams.createCardParams(card);
+        break;
     }
 
     stripe.createSource(sourceParams, new SourceCallback() {
@@ -678,7 +681,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
       return newSource;
     }
 
-    newSource.putString("sourceId", source.getId());
+    newSource.putString("stripeID", source.getId());
     newSource.putInt("amount", source.getAmount().intValue());
     newSource.putInt("created", source.getCreated().intValue());
     newSource.putMap("codeVerification", convertCodeVerificationToWritableMap(source.getCodeVerification()));
@@ -689,7 +692,7 @@ public class StripeModule extends ReactContextBaseJavaModule {
     newSource.putMap("owner", convertOwnerToWritableMap(source.getOwner()));
     newSource.putMap("receiver", convertReceiverToWritableMap(source.getReceiver()));
     newSource.putMap("redirect", convertRedirectToWritableMap(source.getRedirect()));
-    newSource.putMap("sourceTypeData", mapToWritableMap(source.getSourceTypeData()));
+    newSource.putMap("details", mapToWritableMap(source.getSourceTypeData()));
     newSource.putString("status", source.getStatus());
     newSource.putString("type", source.getType());
     newSource.putString("typeRaw", source.getTypeRaw());

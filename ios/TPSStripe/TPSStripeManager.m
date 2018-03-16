@@ -280,8 +280,8 @@ RCT_EXPORT_METHOD(createSourceWithParams:(NSDictionary *)params
         STPCardParams *card = [STPCardParams new];
         card.name = params[@"name"];
         card.number = params[@"number"];
-        card.expMonth = params[@"expMonth"];
-        card.expYear = params[@"expYear"];
+        card.expMonth = [[params objectForKey:@"expMonth"] unsignedIntegerValue];
+        card.expYear = [[params objectForKey:@"expYear"] unsignedIntegerValue];
         card.cvc = params[@"cvc"];
         sourceParams = [STPSourceParams cardParamsWithCard:card];
     }
